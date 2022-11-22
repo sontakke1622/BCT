@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >= 0.7.0;
+
+contract StudentRegister{
+    address public owner;
+    mapping(address=>student)students;
+
+    constructor() public{
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner{
+        require(msg.sender==owner);
+        _;
+    }
+
+    struct student{
+        address studentid;
+        string name;
+        string course;
+        uint256 mark1;
+        uint256 mark2;
+        uint256 mark3;
+        uint256 totalMarks;
+        uint256 percentage;
+        bool isExist;
+    }
+    function register(address studentid, string memory name, string memory course,uint256 mark1, uint256 mark2, uint256 mark3) public onlyOwner{
+        require(students[studentid].isExist==false,"ha..ha..Fraud Not Possible.");
+        uint256 totalMarks;
+        uint256 percentage;
+        totalMarks = (mark1+mark2+mark3);
+        percentage=(totalMarks/3);
+        students[studentid] = student(studentid,name, course,mark1,mark2,mark3,totalMarks,percentage,true);
+    }
+    function getStudentDetails(address studentid) public view returns(address, string memory, string memory, uint256, uint256){
+
+    return(students[studentid].studentid,students[studentid].name,students[studentid].course,students[studentid].totalMarks,students[studentid].percentage);
+}
+}
